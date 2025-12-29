@@ -1,5 +1,5 @@
 import React from 'react'
-import {Label} from "@radix-ui/react-menu";
+import {Label} from "@/components/ui/label";
 import {Controller} from "react-hook-form";
 import {
     Select,
@@ -34,11 +34,10 @@ const SelectField = ({name, label, placeholder, options, control, error, require
                                 </SelectItem>
                             ))}
                         </SelectContent>
-                        {error && <p className="text-sm text-red-500">{error.message}</p>}
                     </Select>
                 )}
-
             />
+            {error && <p className="text-sm text-red-500">{error.message}</p>}
         </div>
     )
 }

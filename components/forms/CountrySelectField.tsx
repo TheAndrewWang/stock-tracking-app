@@ -21,7 +21,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import {Controller} from "react-hook-form";
-import {Label} from "@radix-ui/react-menu";
+import {Label} from "@/components/ui/label";
 
 
 const CountrySelect = ({value, onChange}: { value: string; onChange: (value: string) => void; }) => {

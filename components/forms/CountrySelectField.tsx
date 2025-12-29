@@ -28,6 +28,11 @@ const CountrySelect = ({value, onChange}: { value: string; onChange: (value: str
     const [open, setOpen] = React.useState(false)
     const countries = useMemo(() => countryList().getData(), [])
 
+    const getFlagEmoji = (countryCode: string) => {
+        const codePoints = countryCode.toUpperCase().split('').map((char) => 127397 + char.charCodeAt(0));
+        return String.fromCodePoint(...codePoints);
+    }
+
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
@@ -38,35 +43,43 @@ const CountrySelect = ({value, onChange}: { value: string; onChange: (value: str
                     className="country-select-trigger"
                 >
                     {value
-                        ? countries.find((country) => country.value === value)?.label
+                        ? (<span className='flex items-center gap-2'>
+                        <span>{getFlagEmoji(value)}</span>
+                        <span>{countries.find((c) => c.value === value)?.label}</span>
+                    </span>)
                         : "Select a country..."
                     }
+
                     <ChevronsUpDown className="opacity-50"/>
                 </Button>
             </PopoverTrigger>
             <PopoverContent className='w-full p-0 bg-gray-800 border-gray-600' align='start'>
                 <Command className='bg-gray-800 border-gray-600'>
                     <CommandInput placeholder="Search for a country..." className="country-select-input" />
-                        <CommandList>
+                        <CommandList className='max-h-60 bg-gray-800 scrollbar-hide-default'>
                             <CommandEmpty className="country-select-empty">No countries found.</CommandEmpty>
                             <CommandGroup>
                                 {countries.map((country) => (
                                     <CommandItem
                                         key={country.value}
-                                        value={country.label}
-                                        onSelect={(currentCountry) => {
-                                            onChange(currentCountry === value ? "" : currentCountry)
+                                        value={`${country.label} ${country.value}`}
+                                        onSelect={() => {
+                                            onChange(country.value)
                                             setOpen(false)
                                         }}
                                         className="country-select-item"
                                     >
-                                        {country.label}
                                         <Check
                                             className={cn(
-                                                "m1-auto",
+                                                "mr-2 h-4 w-4 text-yellow-500",
                                                 value === country.value ? "opacity-100" : "opacity-0"
                                             )}
                                         />
+                                        <span className='flex items-center gap-2'>
+                                            <span>{getFlagEmoji(country.value)}</span>
+                                            <span>{country.label}</span>
+                                        </span>
+
                                     </CommandItem>
                                 ))}
                             </CommandGroup>
@@ -78,7 +91,7 @@ const CountrySelect = ({value, onChange}: { value: string; onChange: (value: str
     )
 };
 
-const CountrySelectField = ({
+export const CountrySelectField = ({
     name,
     label,
     control,
@@ -87,7 +100,7 @@ const CountrySelectField = ({
 }: CountrySelectProps) => {
     return (
         <div className="space-y-2">
-            <Label htmlFor={name} className="form-label">{label}</Label>
+            <Label className="form-label">{label}</Label>
             <Controller
                 name={name}
                 control={control}
@@ -105,4 +118,3 @@ const CountrySelectField = ({
         </div>
     )
 }
-export default CountrySelectField

@@ -1,4 +1,17 @@
+import fs from "node:fs";
+import path from "node:path";
+import { config as loadEnv } from "dotenv";
 import mongoose from "mongoose";
+
+// Ensure environment variables are available even when this module is imported first.
+const envFiles = [".env.local", ".env"];
+for (const filename of envFiles) {
+    const envPath = path.resolve(process.cwd(), filename);
+    if (fs.existsSync(envPath)) {
+        loadEnv({ path: envPath, override: false });
+        break;
+    }
+}
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
